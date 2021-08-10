@@ -14,8 +14,6 @@ const io = socketio(server, {
   cors: {
     origin: "https://tomperchat.netlify.app",
     methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true,
   },
 });
 
