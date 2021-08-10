@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: "*",
+    origin: "https://tomper-chat-server.herokuapp.com",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,
