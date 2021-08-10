@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: "https://tomperchat.netlify.app",
+    origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true,
