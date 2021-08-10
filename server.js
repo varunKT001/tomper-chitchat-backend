@@ -7,10 +7,10 @@ const cors = require("cors");
 const socketio = require("socket.io");
 
 const app = express();
-app.use(cors());
+app.use(express.urlencoded({ extended: false }));
 
 const server = http.createServer(app);
-const io = socketio(server, { cors: { origin: "*" } });
+const io = socketio(server, { cors: { origin: "*:*" } });
 
 const BOT = "BOT";
 
