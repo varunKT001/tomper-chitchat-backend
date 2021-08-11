@@ -17,7 +17,7 @@ const io = socketio(server, {
   },
 });
 
-const BOT = "BOT";
+const BOT = "TOMPER BOT✅";
 
 function formatMessage(username, text) {
   return {
@@ -34,10 +34,10 @@ io.on("connection", (socket) => {
     users.push({ id: socket.id, name: username, room: room });
     console.log(users);
     socket.join(room);
-    socket.emit("chat-message", formatMessage(BOT, "welcome to varta!"));
+    socket.emit("chat-message", formatMessage(BOT, "welcome to TOMPER CHAT!"));
     socket.broadcast
       .to(room)
-      .emit("chat-message", formatMessage(BOT, `${username} joined`));
+      .emit("chat-message", formatMessage(BOT, `${username} joined the room`));
     const connectedUsers = users.filter((user) => user.room === room);
     io.to(room).emit("connected-users", connectedUsers);
   });
@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
     if (user) {
       socket.broadcast
         .to(user.room)
-        .emit("chat-message", formatMessage(BOT, `${user.name} left`));
+        .emit("chat-message", formatMessage(BOT, `${user.name} left the room`));
       users = users.filter((user) => user.id != socket.id);
       const connectedUsers = users.filter((_user) => _user.room === user.room);
       io.to(user.room).emit("connected-users", connectedUsers);
