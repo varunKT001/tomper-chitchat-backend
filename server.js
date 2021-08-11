@@ -30,21 +30,23 @@ let users = [];
 
 io.on("connection", (socket) => {
   //ON NEW USER JOIN
-  socket.on("new-user", (username) => {
+  socket.on("new-user", ({ username, room }) => {
+    users.push({ id: socket.id, name: username, room: room });
+    console.log(users);
+    socket.join(room);
     socket.emit("chat-message", formatMessage(BOT, "welcome to varta!"));
-    socket.broadcast.emit(
-      "chat-message",
-      formatMessage(BOT, `${username} joined`)
-    );
-    users.push({ id: socket.id, name: username });
-    io.emit("connected-users", users);
+    socket.broadcast
+      .to(room)
+      .emit("chat-message", formatMessage(BOT, `${username} joined`));
+    const connectedUsers = users.filter((user) => user.room === room);
+    io.to(room).emit("connected-users", connectedUsers);
   });
 
   //ON NEW CHAT MESSAGE
   socket.on("chat-message", (message) => {
     let user = users.find((user) => user.id === socket.id);
     if (user) {
-      io.emit("chat-message", formatMessage(user.name, message));
+      io.to(user.room).emit("chat-message", formatMessage(user.name, message));
     }
   });
 
@@ -52,13 +54,13 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     let user = users.find((user) => user.id === socket.id);
     if (user) {
-      socket.broadcast.emit(
-        "chat-message",
-        formatMessage(BOT, `${user.name} left`)
-      );
+      socket.broadcast
+        .to(user.room)
+        .emit("chat-message", formatMessage(BOT, `${user.name} left`));
       users = users.filter((user) => user.id != socket.id);
+      const connectedUsers = users.filter((_user) => _user.room === user.room);
+      io.to(user.room).emit("connected-users", connectedUsers);
     }
-    io.emit("connected-users", users);
   });
 });
 
