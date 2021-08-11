@@ -4,6 +4,7 @@ const path = require("path");
 const http = require("http");
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 const socketio = require("socket.io");
 
 const app = express();
@@ -23,6 +24,7 @@ function formatMessage(username, text) {
   return {
     username,
     text,
+    time: moment().format("h:mm a"),
   };
 }
 
@@ -32,7 +34,6 @@ io.on("connection", (socket) => {
   //ON NEW USER JOIN
   socket.on("new-user", ({ username, room }) => {
     users.push({ id: socket.id, name: username, room: room });
-    console.log(users);
     socket.join(room);
     socket.emit("chat-message", formatMessage(BOT, "welcome to TOMPER CHAT!"));
     socket.broadcast
