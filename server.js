@@ -50,6 +50,16 @@ io.on("connection", (socket) => {
     }
   });
 
+  //ON USER TYPING
+  socket.on("typing", () => {
+    let user = users.find((user) => user.id === socket.id);
+    if (user) {
+      socket.broadcast
+        .to(user.room)
+        .emit("typing", `${user.name} is typing...`);
+    }
+  });
+
   //ON USER-DISCONNECT
   socket.on("disconnect", () => {
     let user = users.find((user) => user.id === socket.id);
