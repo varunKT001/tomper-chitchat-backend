@@ -18,12 +18,13 @@ const io = socketio(server, {
   },
 });
 
-const BOT = "TOMPER BOT✅";
+const BOT = "TOMPER BOT ✔";
 
-function formatMessage(username, text) {
+function formatMessage(username, text, image) {
   return {
     username,
     text,
+    image,
     time: moment().utcOffset("+05:30").format("h:mm a"),
   };
 }
@@ -47,7 +48,10 @@ io.on("connection", (socket) => {
   socket.on("chat-message", (message) => {
     let user = users.find((user) => user.id === socket.id);
     if (user) {
-      io.to(user.room).emit("chat-message", formatMessage(user.name, message));
+      io.to(user.room).emit(
+        "chat-message",
+        formatMessage(user.name, message.messageText, message.baseImage)
+      );
     }
   });
 
